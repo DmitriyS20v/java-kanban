@@ -1,4 +1,4 @@
-package ru.yandex.javacourse.finaltask4.tasks;
+package ru.yandex.javacourse.finaltask5.tasks;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Objects;
 
 public class Epic extends Task {
 
-    private final List<Integer> subTasksId = new ArrayList();
+    private final List<Integer> subTasksId = new ArrayList<>();
 
     public Epic(String epicName, String epicDescription, int epicId) {
 
@@ -56,6 +56,12 @@ public class Epic extends Task {
 
     public List<Integer> getSubTasksId() {
         return subTasksId;
+    }
+
+    public void removeIdSubtaskInListSubtask(int SubTaskId) {
+        if (subTasksId.contains(SubTaskId)) {
+            subTasksId.remove(Integer.valueOf(SubTaskId));
+        }
     }
 
     @Override

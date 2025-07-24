@@ -1,4 +1,4 @@
-package ru.yandex.javacourse.finaltask4.tasks;
+package ru.yandex.javacourse.finaltask5.tasks;
 
 
 import java.util.Objects;
