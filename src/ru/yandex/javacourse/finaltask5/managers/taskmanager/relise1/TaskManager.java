@@ -5,7 +5,6 @@ import ru.yandex.javacourse.finaltask5.tasks.SubTask;
 import ru.yandex.javacourse.finaltask5.tasks.Task;
 import ru.yandex.javacourse.finaltask5.tasks.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface TaskManager {
@@ -55,6 +54,6 @@ public interface TaskManager {
     // Выбор пользователем статуса задачи
     TaskStatus selectTaskStatus(int command);
 
-    ArrayList<Task> getHistory();
+    List<Task> getHistory();
 
 }

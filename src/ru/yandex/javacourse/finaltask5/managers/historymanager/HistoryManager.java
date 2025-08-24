@@ -2,14 +2,15 @@ package ru.yandex.javacourse.finaltask5.managers.historymanager;
 
 import ru.yandex.javacourse.finaltask5.tasks.Task;
 
-
-import java.util.ArrayList;
+import java.util.List;
 
 
 public interface HistoryManager {
 
-    <T extends Task> void add(T task);
+    void add(Task task);
 
-    ArrayList<Task> getHistory();
+    void remove(int id);
+
+    List<Task> getHistory();
 
 }

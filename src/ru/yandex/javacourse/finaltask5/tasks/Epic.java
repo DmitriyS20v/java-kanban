@@ -1,9 +1,6 @@
 package ru.yandex.javacourse.finaltask5.tasks;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class Epic extends Task {
@@ -21,7 +18,7 @@ public class Epic extends Task {
     }
 
 
-    public static TaskStatus checkEpicStatus(Epic epic, HashMap<Integer, SubTask> subTasks) {
+    public static TaskStatus checkEpicStatus(Epic epic, Map<Integer, SubTask> subTasks) {
         int numberOfSubTasksEpic = 0;
         int subTaskNew = 0;
         int subTaskFinished = 0;

@@ -17,6 +17,8 @@ class InMemoryTaskManagerTest {
     @BeforeEach
     void setUp() {
         taskManager = new InMemoryTaskManager();
+
+
     }
 
     @Test
@@ -75,11 +77,12 @@ class InMemoryTaskManagerTest {
     void objectEpicCannotBeAddedToItselfAsASubtask() {
         Epic epic = new Epic("Пойти в поход", "Организовать поход", 7);
         taskManager.addTasks(epic);
-
+        Epic epic2 = taskManager.getEpic(7);
+        assertNotNull(epic2, "Эпик должен быть добавлен в хеш таблицу");
 
         taskManager.addTasks(epic);
         SubTask subTask = taskManager.getSubTask(7);
-        assertNotEquals(epic, subTask, "Ошибка, эпик не может быть своей же подзадачей");
+        assertNull(subTask, "Ошибка, эпик не может быть своей же подзадачей");
 
     }
 
@@ -90,10 +93,12 @@ class InMemoryTaskManagerTest {
         SubTask subTask = new SubTask("Выбрать маршрут",
                 "Составить несколько вариантов маршрута и выбрать их", 11, 7);
         taskManager.addTasks(subTask);
+        SubTask subTask2 = taskManager.getSubTask(11);
+        assertNotNull(subTask2, "Подзадача должна быть добавлена в хеш таблицу");
 
         taskManager.addTasks(subTask);
         Epic epic2 = taskManager.getEpic(11);
-        assertNotEquals(subTask, epic2, "Ошибка, подзадача не может быть своим же эпиком");
+        assertNull(epic2, "Ошибка, подзадача не может быть своим же эпиком");
     }
 
     @Test
@@ -181,6 +186,115 @@ class InMemoryTaskManagerTest {
         assertEquals(4, taskId, "Задачи по сгенерированному идентификатору не совпадают");
         assertEquals(5, epicId, "Эпики по сгенерированному идентификатору не совпадают");
         assertEquals(6, subTaskId, "Подзадачи по сгенерированному идентификатору не совпадают");
+
+    }
+
+    @Test
+    void checkIdNotActualTaskInEpic() {
+        Epic epic = new Epic("Пойти в поход", "Организовать поход", 7);
+        taskManager.addTasks(epic);
+
+        SubTask subTask = new SubTask("Собрать вещи для похода", "Составить список вещей для похода", 10, 7);
+        taskManager.addTasks(subTask);
+
+        SubTask subTask2 = new SubTask("Составить маршрут", "Выбрать подходящий маршрут по погодным условиям.", 37, 7);
+        taskManager.addTasks(subTask2);
+
+        SubTask subTask3 = new SubTask("Взять еду", "Составить список необходимых продуктов для похода", 87, 7);
+        taskManager.addTasks(subTask3);
+
+        taskManager.deleteTaskByIdentificator(10);
+
+        Epic test = taskManager.getEpic(7);
+        List<Integer> subTasksForEpic = test.getSubTasksId();
+
+        assertFalse(subTasksForEpic.contains(subTask.getTaskId()), "Данная подзадача присутствует");
+    }
+
+    @Test
+    void checkDataInManagerAfterUpdateTasksAndCheckHistoryManagerAfterUpdateTasks() {
+
+        Epic epic = new Epic("Пойти в поход", "Организовать поход", 7);
+        taskManager.addTasks(epic);
+
+        SubTask subTask = new SubTask("Собрать вещи для похода", "Составить список вещей для похода", 10, 7);
+        taskManager.addTasks(subTask);
+
+        SubTask subTask2 = new SubTask("Составить маршрут", "Выбрать подходящий маршрут по погодным условиям.", 37, 7);
+        taskManager.addTasks(subTask2);
+
+        SubTask subTask3 = new SubTask("Взять еду", "Составить список необходимых продуктов для похода", 87, 7);
+        taskManager.addTasks(subTask3);
+
+        Task task = new Task("Купить овощей", "Купить, помидоры, огурцы, баклажан, капусту", 12);
+        taskManager.addTasks(task);
+
+
+        //Строки ниже сделаны для того чтобы отобразить в истории просмотров
+        Task getTask = taskManager.getTask(task.getTaskId());
+        Epic getEpic = taskManager.getEpic(epic.getTaskId());
+        SubTask getSubTask = taskManager.getSubTask(subTask.getTaskId());
+        SubTask getSubTask2 = taskManager.getSubTask(subTask2.getTaskId());
+        SubTask getSubTask3 = taskManager.getSubTask(subTask3.getTaskId());
+
+        List<Task> tasks = taskManager.getTasks();
+        assertEquals(tasks.size(), 1, "Количество сохраненных задач больше предполагаемого");
+        assertEquals(task, getTask, "Задача не совпадает");
+        assertEquals(epic, getEpic, "Эпик не совпадает");
+        assertEquals(subTask, getSubTask, "Подзадача не совпадает");
+        assertEquals(subTask2, getSubTask2, "Подзадача не совпадает");
+        assertEquals(subTask3, getSubTask3, "Подзадача не совпадает");
+
+        Task taskUpdate = new Task("Купить овощей", "Купить, помидоры, огурцы, баклажан, капусту, катошку, свеклу", 12);
+
+        taskManager.updateTask(taskUpdate);
+
+        Task getTaskUpdate = taskManager.getTask(taskUpdate.getTaskId());
+
+        tasks = taskManager.getTasks();
+        assertEquals(tasks.size(), 1, "Количество сохраненных задач не соответствует предполагаемого");
+        assertEquals(taskUpdate, getTaskUpdate, "Задача не совпадает");
+        assertEquals(epic, getEpic, "Эпик не совпадает");
+        assertEquals(subTask, getSubTask, "Подзадача не совпадает");
+        assertEquals(subTask2, getSubTask2, "Подзадача не совпадает");
+        assertEquals(subTask3, getSubTask3, "Подзадача не совпадает");
+
+        //Проверка списка истории на размер и соответствие измененной задачи
+        List<Task> tasksHistory = taskManager.getHistory();
+        assertEquals(tasksHistory.size(), 5, "Количество просмотренных задач не совпадает с предполагаемым");
+
+        //Обновление подзадачи и проверки
+        List<SubTask> subTasks = taskManager.getSubTasks();
+        assertEquals(subTasks.size(), 3, "Количество добавленных подзадач не совпадает с предполагаемым");
+
+        SubTask subTaskUpdate = new SubTask("Собрать вещи для похода в горы",
+                "Составить список вещей для похода и список одежды", 10, 7);
+        taskManager.updateTask(subTaskUpdate);
+        SubTask getSubTaskUpdate = taskManager.getSubTask(subTaskUpdate.getTaskId());
+
+        subTasks = taskManager.getSubTasks();
+        assertEquals(subTasks.size(), 3, "Количество добавленных подзадач не совпадает с предполагаемым");
+        assertEquals(subTaskUpdate, getSubTaskUpdate, "Подзадача не совпадает");
+
+        tasksHistory = taskManager.getHistory();
+        assertEquals(tasksHistory.size(), 5, "Количество просмотренных задач не совпадает с предполагаемым");
+        assertTrue(tasksHistory.contains(getSubTaskUpdate), "Обновленная версия эпика не совпадает в истории просмотров");
+
+        //Обновление эпика и проверки
+        List<Epic> epics = taskManager.getEpics();
+        assertEquals(epics.size(), 1, "Количество добавленных эпиков не совпадает с предполагаемым");
+
+        Epic epicUpdate = new Epic("Поехать на отдых", "Организовать поезду на море", 7);
+        taskManager.updateTask(epicUpdate);
+        Epic getEpicUpdate = taskManager.getEpic(epicUpdate.getTaskId());
+
+        epics = taskManager.getEpics();
+        assertEquals(epics.size(), 1, "Количество добавленных эпиков не совпадает с предполагаемым");
+        assertEquals(epicUpdate, getEpicUpdate, "Эпик не совпадает");
+
+        tasksHistory = taskManager.getHistory();
+        assertEquals(tasksHistory.size(), 2, "Количество просмотренных задач не совпадает с предполагаемым");
+        assertTrue(tasksHistory.contains(getEpicUpdate), "Обновленная версия эпика не совпадает в истории просмотров");
 
     }
 
