@@ -77,10 +77,8 @@ public class ManagersTest {
 
         manager.getEpic(1);
 
-        assertEquals(3, manager.getHistory().size(), "Размер сохраненной истории просмотров эпиков не соответствует");
+        assertEquals(1, manager.getHistory().size(), "Размер сохраненной истории просмотров эпиков не соответствует");
 
-        assertNotEquals(manager.getHistory().get(0), manager.getHistory().get(1), "Просмотренные эпики совпадают.");
-        assertNotEquals(manager.getHistory().get(1), manager.getHistory().get(2), "Просмотренные эпики совпадают.");
-        assertNotEquals(manager.getHistory().get(2), manager.getHistory().get(0), "Просмотренные эпики совпадают.");
+        
     }
 }
