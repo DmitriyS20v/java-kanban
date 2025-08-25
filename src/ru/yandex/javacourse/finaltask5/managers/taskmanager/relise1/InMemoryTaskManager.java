@@ -153,6 +153,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (task.getTaskDescription() == null) {
             System.out.println("Расшифровка задачи отсутствует");
         } else if (task.getTaskId() == 0) {
+            System.out.println("Идентификатор задачи не может быть равен 0");
         } else {
             if (checkIdetificator(task.getTaskId())) {
                 changeIdentificator(task.getTaskId());
@@ -265,19 +266,20 @@ public class InMemoryTaskManager implements TaskManager {
     // Обновление задач
     @Override
     public <T extends Task> void updateTask(T newTask) {
-        int Id = newTask.getTaskId();
-        if (tasks.containsKey(Id)) {
-            tasks.remove(Id);
-            historyManager.remove(Id);
-            tasks.put(Id, newTask);
-        } else if (epics.containsKey(Id)) {
-            deleteTaskByIdentificator(Id); // Эпик обновляется соответственно подзадачи удаляются.
-            epics.put(Id, new Epic(newTask));
-        } else if (subTasks.containsKey(Id)) {
-            int epicId = subTasks.get(Id).getEpicId();
-            subTasks.remove(Id);
-            historyManager.remove(Id);
-            subTasks.put(Id, new SubTask(newTask, epicId));
+        int identificator = newTask.getTaskId();
+        if (tasks.containsKey(identificator)) {
+            tasks.remove(identificator);
+            historyManager.remove(identificator);
+            tasks.put(identificator, newTask);
+        } else if (epics.containsKey(identificator)) {
+            deleteTaskByIdentificator(identificator); // Эпик обновляется соответственно подзадачи удаляются.
+            epics.put(identificator, new Epic(newTask));
+        } else if (subTasks.containsKey(identificator)) {
+            int epicId = subTasks.get(identificator).getEpicId();
+            subTasks.remove(identificator);
+            historyManager.remove(identificator);
+            subTasks.put(identificator
+                    , new SubTask(newTask, epicId));
             Epic epic = epics.get(epicId);
             epic.setStatus(Epic.checkEpicStatus(epic, subTasks));
             epics.put(epicId, epic);
