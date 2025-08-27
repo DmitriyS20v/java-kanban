@@ -10,7 +10,7 @@ import java.util.Collections;
 
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node<Task>> nodes = new HashMap<Integer, Node<Task>>();
+    private final Map<Integer, Node<Task>> nodes = new HashMap<>();
 
     private Node<Task> first;
     private Node<Task> last;

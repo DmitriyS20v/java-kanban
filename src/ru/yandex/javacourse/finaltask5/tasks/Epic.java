@@ -29,8 +29,13 @@ public class Epic extends Task {
             return epicStatus;
         } else {
             for (int subTaskId : epicSubTasks) {
-                numberOfSubTasksEpic++;
                 SubTask subTask = subTasks.get(subTaskId);
+
+                if (subTask == null) {
+                    continue;
+                }
+                numberOfSubTasksEpic++;
+                subTask = subTasks.get(subTaskId);
                 TaskStatus subTaskStatus = subTask.getStatus();
                 if (subTaskStatus == TaskStatus.NEW) {
                     subTaskNew++;

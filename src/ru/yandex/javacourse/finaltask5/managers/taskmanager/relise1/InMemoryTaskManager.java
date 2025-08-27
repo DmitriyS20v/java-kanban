@@ -214,9 +214,6 @@ public class InMemoryTaskManager implements TaskManager {
     public void addSubTask(String taskName, String taskDescription, int epicId) {
         if (epics.isEmpty()) {
             System.out.println("Нет эпиков куда записать подзадачу. В начале создайте эпик");
-        } else if (epics.get(epicId).getTaskName().equals(taskName) & epics.get(epicId).getTaskDescription().equals(taskDescription) &
-                epics.get(epicId).getTaskId() == epicId) {
-            System.out.println("Нельзя добавить сам эпик, в себя в виде подзадачи");
         } else {
             if (epics.containsKey(epicId) && epicId > key) {
                 taskID++;

@@ -79,6 +79,6 @@ public class ManagersTest {
 
         assertEquals(1, manager.getHistory().size(), "Размер сохраненной истории просмотров эпиков не соответствует");
 
-        
+
     }
 }
